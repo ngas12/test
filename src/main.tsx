@@ -12,8 +12,10 @@ import type { Schema } from "../amplify/data/resource";
 
 const client = generateClient<Schema>();
 
-// Make client available globally for demo purposes
-(window as any).amplifyClient = client;
+
+client.queries.sayHello({
+  name: "Amplify",
+})
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
