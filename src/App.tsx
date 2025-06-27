@@ -9,6 +9,7 @@ interface Todo {
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [newTodo, setNewTodo] = useState("");
+  const [functionResult, setFunctionResult] = useState<string>("");
 
   function createTodo() {
     if (newTodo.trim()) {
@@ -32,9 +33,61 @@ function App() {
     setTodos(todos.filter(todo => todo.id !== id));
   }
 
+  async function callAmplifyFunction() {
+    try {
+      const client = (window as any).amplifyClient;
+      if (client) {
+        const result = await client.queries.sayHello({
+          name: "Amplify",
+        });
+        setFunctionResult(result.data);
+      } else {
+        setFunctionResult("Amplify client not available - deploy first!");
+      }
+    } catch (error) {
+      setFunctionResult(`Error: ${error}`);
+    }
+  }
+
   return (
     <main>
       <h1>My Todos</h1>
+      
+      {/* Amplify Function Test Section */}
+      <div style={{ 
+        marginBottom: "30px", 
+        padding: "20px", 
+        background: "#f0f8ff", 
+        borderRadius: "8px",
+        border: "1px solid #ddd"
+      }}>
+        <h2>Amplify Function Test</h2>
+        <button 
+          onClick={callAmplifyFunction}
+          style={{
+            background: "#007bff",
+            color: "white",
+            border: "none",
+            padding: "10px 20px",
+            borderRadius: "4px",
+            cursor: "pointer",
+            marginBottom: "10px"
+          }}
+        >
+          Call Amplify Function
+        </button>
+        {functionResult && (
+          <div style={{ 
+            padding: "10px", 
+            background: "#e9ecef", 
+            borderRadius: "4px",
+            marginTop: "10px"
+          }}>
+            <strong>Result:</strong> {functionResult}
+          </div>
+        )}
+      </div>
+
       <div style={{ marginBottom: "20px" }}>
         <input
           type="text"
@@ -94,10 +147,10 @@ function App() {
         </p>
       )}
       <div style={{ marginTop: "30px", padding: "20px", background: "#f0f0f0", borderRadius: "8px" }}>
-        🎉 Static site successfully hosted on AWS Amplify!
+        🎉 Amplify Gen 2 Function successfully set up!
         <br />
-        <a href="https://docs.amplify.aws/react/start/quickstart/">
-          Learn more about Amplify hosting.
+        <a href="https://docs.amplify.aws/react/build-a-backend/functions/set-up-function/">
+          Learn more about Amplify Functions.
         </a>
       </div>
     </main>
